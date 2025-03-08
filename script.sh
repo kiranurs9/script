@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pods_status=$(kubectl  get pods -n kube-system -o custom-columns=POD:metadata.name,PODIP:status.podIP,READY-true:status.containerStatuses[*].ready | grep -i core | grep true)
+pods_status=$(kubectl  get pods -n default -o custom-columns=POD:metadata.name,PODIP:status.podIP,READY-true:status.containerStatuses[*].ready | grep -i nfs | grep true)
 
 
 if [ -z "$pods_status" ]; then
