@@ -1,37 +1,12 @@
-apiVersion: v1
-data:
-  script.sh: |-
-    echo "Hello world!"
-    kubectl get pods
-kind: ConfigMap
-metadata:
-  name: script-configmap
-  namespace: default
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  labels:
-    app: script-job
-  name: script-job
-  namespace: default
-spec:
-  backoffLimit: 2
-  template:
-    spec:
-      containers:
-        - command:
-            - sh
-            - /opt/script/script.sh
-          image: 'bitnami/kubectl:1.12'
-          name: script
-          volumeMounts:
-            - mountPath: /opt/script
-              name: script-configmap
-              readOnly: false
-      restartPolicy: Never
-      serviceAccountName: test
-      volumes:
-        - configMap:
-            name: script-configmap
-          name: script-configmap
+#!/bin/bash
+
+pods_status=$(kubectl  get pods -n kube-system -o custom-columns=POD:metadata.name,PODIP:status.podIP,READY-true:status.containerStatuses[*].ready | grep -i core | grep true)
+
+
+if [ -z "$pods_status" ]; then
+  echo "Some of the ebs-csi pods are not fully up and running with all the containers. Pls fix the issue and rerun the script"
+  exit 1
+else                                                                                                                                                                                                         
+  echo "All the ebs-csi pods are running with no issues."
+
+fi
