@@ -10,3 +10,4 @@ else
   echo "All the ebs-csi pods are running with no issues."
 
 fi
+echo "$(kubectl get pod  $(kubectl get pods -n kube-system  | grep -i nfs | awk 'FNR==1{print $1}') -o jsonpath='{range .spec.containers[*]}{.name}{"\t"}{.image}{"\n"}{end}')"
